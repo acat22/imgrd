@@ -80,7 +80,7 @@ eg. array(&$this, 'loadProgress'). The method should be public.
 It takes one parameter $percent, which is a numeric value between 0 and 1 (0.0132123, 0.80219239, etc.), eg. 
 
 	function loadProgress($percent) {
-		echo '<p>'.round($percent100).'</p>';
+		echo '<p>'.round($percent * 100).'</p>';
 	}  
 	
 or 
