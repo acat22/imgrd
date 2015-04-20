@@ -101,7 +101,11 @@ or
 
 	$t = new myProgressTestClass('https://www.google.com/images/srpr/logo11w.png');
 	
-**rawprogress** - return raw output for the progress function, default: false  
+**rawprogress** - return raw output for the progress function, default: false.  
+If set to true, your progress function should be:
+	
+	function loadProgress($totalBytesToDownload, $downloaded, $totalBytesToUpload, $uploaded) 
+	
 
 Copyright 2015. Licensed under GPL v 2.
 https://github.com/acat22/imgrd
