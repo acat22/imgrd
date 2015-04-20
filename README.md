@@ -27,8 +27,9 @@ Options:
 options:  
 **referrer** - the webpage where the image was seen. if you know it, provide  
 **load** - if to download the image or not, default: true.   
-Put it to false only with 'check: true' when you want only to check the image.  
+Put it to false only with **check: true** when you want only to check the image.  
 **check** - check image before downloading, default: false.  
+It returns image type, image size and raw mime-type output.  
 If set to true and the check fails, then load operation won't be executed.  
 **cookies** - use cookies, default: true. Put to false for better performance, but some websites may refuse to give you the image.  
 **cookiefile** - full path to your cookiefile  
@@ -37,7 +38,6 @@ or, in the case you want to call a class method, pass the following: array(&$cla
 eg. array(&$this, 'loadProgress')  
 It takes one parameter $percent, which is a numeric value between 0 and 1 (0.0132123, 0.80219239, etc.), eg. 
 
----------------------
 	function loadProgress($percent) {
 		echo '<p>'.round($percent100).'</p>';
 	}  
