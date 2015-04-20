@@ -62,12 +62,30 @@ If set to true and the check fails, then load operation won't be executed.
 **cookiefile** - full path to your cookiefile  
 **progress** - pass here the name of the function to receive current loading progress   
 or, in the case you want to call a class method, pass the following: array(&$classInstance, 'classMethod')  
-eg. array(&$this, 'loadProgress')  
+eg. array(&$this, 'loadProgress'). The method should be public.    
 It takes one parameter $percent, which is a numeric value between 0 and 1 (0.0132123, 0.80219239, etc.), eg. 
 
 	function loadProgress($percent) {
 		echo '<p>'.round($percent100).'</p>';
 	}  
+	
+or 
+
+	class myProgressTestClass {
+		public function __construct($url) {
+			$opts = array(
+				'progress' => array(&$this, 'loadProgress')
+			);
+			$idl1 = new IRD\ImageRemoteDownloader;
+			$test = $idl1->load($url, $opts);
+		}
+		
+		public function loadProgress($percent) {
+			echo '<p>'.round($percent * 100).'</p>';
+		}
+	}
+
+	$t = new myProgressTestClass('https://www.google.com/images/srpr/logo11w.png');
 	
 **rawprogress** - return raw output for the progress function, default: false  
 
