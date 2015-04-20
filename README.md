@@ -38,7 +38,7 @@ and store downloadedimage.png in the folder "/tmp/"
 
 returns associative array (  
   *status* - true or false  
-  *imgtype* - jpg / gif / png / none if failed  
+  *imgtype* - jpg / gif / png / empty if failed  
   *mimetype* - raw mimetype output  
   *size* - size in bytes  
   *data* - image, you can save it on disc via file_put_contents or do something else  
