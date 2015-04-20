@@ -16,8 +16,26 @@ print_r($test);
 */
 
 function loadProgress($percent) {
-	echo '<p>'.($percent * 100).'</p>';
+	echo '<p>'.round($percent * 100).'</p>';
 }
+
+class testClass {
+	public function __construct() {
+		$opts = array(
+			//'cookiefile' => 'C:/DevelopmentWWW/http/projects/imgrd/imgrd/tst/ck1.txt',
+			//'check' => 1,
+			'progress' => array(&$this, 'loadProgress')
+		);
+		$idl1 = new IRD\ImageRemoteDownloader;
+		$test = $idl1->load('http://s1.reafiny.com/imgs/1/32/6cfcdb149b5b7808.jpg', $opts);
+	}
+	
+	public function loadProgress($percent) {
+		echo '<p>'.round($percent * 100).'</p>';
+	}
+}
+
+$t = new testClass;
 /*
 $opts = array(
 	'cookiefile' => 'C:/DevelopmentWWW/http/projects/imgrd/ck1.txt',
@@ -26,6 +44,7 @@ $opts = array(
 );
 $test = $idl->load('http://s1.reafiny.com/imgs/1/32/6cfcdb149b5b7808.jpg', $opts);
 */
+/*
 $opts = array(
 	'referrer' => 'http://www.dm5.com/m180392/',
 	'load' => 1
@@ -37,3 +56,5 @@ if ($test['status']) {
 	echo $test['size'];
 	file_put_contents('tst/dattest.'.$test['imgtype'], $test['data']);
 } else print_r($test);
+*/
+
