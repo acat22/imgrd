@@ -27,9 +27,7 @@ $opts = array(
 $test = $idl->load('http://s1.reafiny.com/imgs/1/32/6cfcdb149b5b7808.jpg', $opts);
 */
 $opts = array(
-	'cookiefile' => 'C:/DevelopmentWWW/http/projects/imgrd/tst/ck1.txt',
 	'referrer' => 'http://www.dm5.com/m180392/',
-	'check' => 0,
 	'load' => 1
 );
 
