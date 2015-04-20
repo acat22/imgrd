@@ -5,8 +5,8 @@ The class for remote downloading JPEG, GIF, PNG.
 Supports onProgress callback.  
 Supports check without downloading.  
 Can break through several anti-hotlinking protections (it's okay, since we don't do hotlinking), 
-except expiration key.
-Requires CURL.
+except expiration key.  
+Requires CURL.  
 
 Why to use 
 ---------
