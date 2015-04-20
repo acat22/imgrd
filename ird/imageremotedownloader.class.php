@@ -17,8 +17,7 @@
  * with options:
  * 
  * $opts = array(
- *  	'check' => 1,
- *      'load' => 0
+ *  	'checkonly' => 1
  * );
  * $data = $idl->load($imageUrl, $opts); // only checking if the image can be downloaded and get its type and size
  * 
@@ -26,10 +25,9 @@
  * url - first param, the full url of the image,
  * options:
  * 'referrer' - the webpage where the image was seen. if you know it, provide
- * 'load' - if to download the image or not, default: true. 
- * Put it to false only with 'check: true' when you want only to check the image.
  * 'check' - check image before downloading, default: false. 
  * If set to true and the check fails, then load operation won't be executed.
+ * 'checkonly' - default: false. Put it to true when you want only to check the image without downloading.
  * 'cookies' - use cookies, default: true. Put to false for better performance, but some websites may refuse to give you the image.
  * 'cookiefile' - full path to your cookiefile
  * 'progress' - pass here the name of the function to receive current loading progress 
@@ -242,11 +240,11 @@ class ImageRemoteDownloader
 		}
 		
 		$res = false;
-		if ($opts['check']) {
+		if ($opts['check'] || $opts['checkonly']) {
 			$check = $this->_checkImage($url, $referrer);
 			$res = $check;
 		}
-		if (isset($opts['load']) && !$opts['load']) {
+		if ($opts['checkonly']) {
 		} else {
 			if ($check && !$check['status']) {
 			} else {
