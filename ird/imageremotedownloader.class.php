@@ -2,11 +2,29 @@
 /**
  * ImageRemoteDownloader
  * 
+ * Usage:
+ * $idl = new IRD\ImageRemoteDownloader;
+ * $data = $idl->load($imageUrl);
  * 
  * 
+ * with options:
  * 
+ * $opts = array(
+ *  	'check' => 1,
+ *      'load' => 0
+ * );
+ * $data = $idl->load($imageUrl, $opts); // only checking if the image can be downloaded and get its type and size
  * 
+ * Options:
+ * 'check' - check image before downloading, default: false
+ * 'cookies' - use cookies, default: true
+ * 'cookiefile' - full path to your cookiefile
+ * 'progress' - pass here the name of the function to receive current loading progress. 
+ * it takes one parameter $percent, which is a numeric value between 0 and 1 (0.0132123, 0.80219239, etc.)
+ * 'rawprogress' - return raw output for the progress function, default: false
  * 
+ * Copyright 2015. Licensed under GPL v 2.
+ * https://github.com/acat22/imgrd
  */ 
 namespace IRD;
 class ImageRemoteDownloader 
@@ -20,9 +38,7 @@ class ImageRemoteDownloader
 	protected $progressRaw = false; // raw progress callback
 	
 	/**
-	 * just a filler for common usage
-	 * 
-	 * 
+	 * just a filler CURL for common usage
 	 */
 	protected function baseCURLConfig(&$ch) 
 	{
@@ -54,6 +70,7 @@ class ImageRemoteDownloader
 		curl_setopt_array($ch, array(
 			CURLOPT_COOKIEJAR => $this->ckfile,
 			CURLOPT_CONNECTTIMEOUT => $this->timeoutFC,
+			CURLOPT_NOBODY => true, 
 			CURLOPT_HEADER => true
 		));
 		
@@ -77,7 +94,7 @@ class ImageRemoteDownloader
 		
 		$this->baseCURLConfig($ch);
 		curl_setopt_array($ch, array(
-			CURLOPT_NOBODY => TRUE, // it's a check, we don't need the actual thing
+			CURLOPT_NOBODY => true, // it's a check, we don't need the actual thing
 			CURLOPT_REFERER => $referrer, // referrer
 			CURLOPT_CONNECTTIMEOUT => $this->timeoutLI
 		));
@@ -170,10 +187,12 @@ class ImageRemoteDownloader
 	 * @param array $opts options
 	 * @return associative array(status, data (img body), imgtype (jpg, gif, png), size (in bytes), mimetype (raw mimetype as the site returned))
 	 */ 
-	public function load($url, array $opts) 
+	public function load($url, array $opts = null) 
 	{
 		if (!$url) return false;
 		$referrerP = parse_url($url);
+		
+		if (!$opts) $opts = array();
 		
 		if (!$opts['cookiefile']) {
 			$tempFile = true;
@@ -198,7 +217,7 @@ class ImageRemoteDownloader
 		$this->progressRaw = false;
 		if ($opts['progress']) {
 			$this->progressCallback = $opts['progress'];
-			if ($opts['progressraw']) $this->progressRaw = true;
+			if ($opts['rawprogress']) $this->progressRaw = true;
 		}
 		
 		if (isset($opts['cookies']) && !$opts['cookies']) {
