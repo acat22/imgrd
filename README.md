@@ -1,5 +1,3 @@
-# imgrd
-
 Image Remote Downloader for PHP
 ===============================
 
