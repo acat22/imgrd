@@ -177,7 +177,7 @@ class ImageRemoteDownloader
 		
 		if (!$opts['cookiefile']) {
 			$tempFile = true;
-			$this->ckfile = tempnam("/tmp", "IMGRDC");
+			$this->ckfile = tempnam("./", "IMGRDC");
 		} else {
 			$this->ckfile = $opts['cookiefile'];
 		}
