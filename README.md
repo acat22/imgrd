@@ -24,9 +24,17 @@ Usage:
 		echo 'Filesize: '.$data['size'].' bytes<br/>';
 		echo 'Image type: '.$data['imgtype'].'<br/>';
 		echo 'Raw mime-type: '.$data['mimetype'].'<br/>';
-		$filename = 'downloadedimage'; // your filename
+		$filename = '/tmp/downloadedimage'; // your filename
 		file_put_contents($filename.'.'.$data['imgtype'], $data['data']);
 	}
+	
+will do:
+
+	Filesize: 14022 bytes
+	Image type: png
+	Raw mime-type: image/png
+	
+and store downloadedimage.png in the folder "/tmp/"
 
 returns associative array (  
   *status* - true or false  
@@ -49,6 +57,12 @@ with options:
 		echo 'Image type: '.$data['imgtype'].'<br/>';
 		echo 'Raw mime-type: '.$data['mimetype'].'<br/>';
 	}
+	
+output:
+
+	Filesize: 14022 bytes
+	Image type: png
+	Raw mime-type: image/png
 
 Options:  
 **url** - first param, the full url of the image,  
