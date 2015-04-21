@@ -7,7 +7,6 @@ Supports check without downloading.
 Can break through several anti-hotlinking protections (it's okay, since we don't do hotlinking), 
 except expiration key.  
 Requires CURL.  
-Execution in background see explained below.  
 
 Why to use 
 ---------
@@ -108,40 +107,6 @@ If set to true, your progress function should be:
 	function loadProgress($totalBytesToDownload, $downloaded, $totalBytesToUpload, $uploaded) 
 	
 	
-Run in background
------------------
-When you don't want to wait until the script finishes.  
-For Linux systems, create a PHP script and put it into your script executable directory.  
-In your main code where you call ImageRemoteDownloader, put these lines instead:
-	
-	$params = array{
-		'url' => 'image url here',
-		'dbID' => 'some db id to call'
-		// etc., well, whatever params you need, just don't make it too long
-	);
-	$fullScriptPath = '/var/www/scripts/download.php'; // full path to your script
-	exec('/usr/bin/php '.$fullScriptPath.' '.serialize($params).' > /dev/null 2>/dev/null &');
-
-	
-In the script ('download.php') add the following code:  
-	
-	<?php
-	$params = deserialize($argv[1]);
-	
-	// and do your stuff here
-	// example:
-	// call here all require, autoload, etc.
-	
-	$idl = new IRD\ImageRemoteDownloader;
-	$data = $idl->load($params['url']);
-	
-	if ($data['status']) {
-		// save image
-		file_put_contents($filename.'.'.$data['imgtype'], $data['data']);
-		// call db and write there using your $params['dbID'], etc.
-	}
-	
-Now it works in background.
 	
 
 
