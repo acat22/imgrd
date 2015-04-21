@@ -120,13 +120,13 @@ In your main code where you call ImageRemoteDownloader, put these lines instead:
 		// etc., well, whatever params you need, just don't make it too long
 	);
 	$fullScriptPath = '/var/www/scripts/download.php'; // full path to your script
-	exec('/usr/bin/php '.$fullScriptPath.' '.serialize($params).' > /dev/null 2>/dev/null &');
+	exec('/usr/bin/php '.$fullScriptPath.' "'.serialize($params).'" > /dev/null 2>/dev/null &');
 
 	
 In the script ('download.php') add the following code:  
 	
 	<?php
-	$params = deserialize($argv[1]);
+	$params = unserialize($argv[1]);
 	
 	// and do your stuff here
 	// example:
