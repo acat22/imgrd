@@ -15,19 +15,16 @@ require '../ird/imageremotedownloader.class.php';
 
 $idl = new IRD\ImageRemoteDownloader;
 
-ob_implicit_flush(true);
+ob_implicit_flush(true); // well, it doesn't always work
 
-$counter = 0;
 function loadProgress($percent) {
-	global $counter;
-	$counter++;
 	$params = array(
 		'status'=>'inprogress',
 		'p' => round($percent * 97)
 	);
 	echo json_encode($params)."\n";
-	ob_flush();
-    flush();
+	ob_flush(); // well, it doesn't always work
+    flush(); // well, it doesn't always work
 }
 
 $opts = array(
@@ -44,12 +41,11 @@ if ($img['status']) {
 	$uplurl = 'progress.'.$img['imgtype'];
 	$params = array(
 		'status'=>'complete',
-		'url'=>$uplurl,
-		'counter' => $counter
+		'url'=>$uplurl
 	);
 	file_put_contents($uplurl, $img['data']);
 }
 
 echo json_encode($params)."\n";
-ob_flush();
-flush();
+ob_flush(); // well, it doesn't always work
+flush(); // well, it doesn't always work
