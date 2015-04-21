@@ -107,7 +107,6 @@ If set to true, your progress function should be:
 	function loadProgress($totalBytesToDownload, $downloaded, $totalBytesToUpload, $uploaded) 
 	
 	
-	
 
 
 Copyright 2015. Licensed under GPL v 2.
