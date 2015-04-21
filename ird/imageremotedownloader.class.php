@@ -50,6 +50,7 @@ class ImageRemoteDownloader
 	protected $userAgent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)'; // user agent line
 	protected $progressCallback = null; // progress callback
 	protected $progressRaw = false; // raw progress callback
+	protected $cookies = array();
 	
 	/**
 	 * just a filler CURL for common usage
@@ -57,7 +58,6 @@ class ImageRemoteDownloader
 	protected function baseCURLConfig(&$ch) 
 	{
 		curl_setopt_array($ch, array(
-			CURLOPT_COOKIEFILE => $this->ckfile,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_AUTOREFERER => true,
 			CURLOPT_FOLLOWLOCATION => true,
@@ -68,6 +68,18 @@ class ImageRemoteDownloader
 			CURLOPT_SSL_VERIFYHOST => 0, // don't verify ssl
 			CURLOPT_SSL_VERIFYPEER => false
 		));
+		
+		if ($this->ckfile) {
+			curl_setopt($ch, CURLOPT_COOKIEFILE, $this->ckfile);
+		} else 
+		// fill cookies
+		if (count($this->cookies) > 0){
+			$ckline = array();
+			foreach ($this->cookies as $n=>$v) {
+				$ckline[] = $n.'='.$v;
+			}
+			curl_setopt($ch, CURLOPT_COOKIE, implode("; ",$ckline));
+		}
 	}
 	
 	/**
@@ -82,13 +94,29 @@ class ImageRemoteDownloader
 		
 		$this->baseCURLConfig($ch);
 		curl_setopt_array($ch, array(
-			CURLOPT_COOKIEJAR => $this->ckfile,
 			CURLOPT_CONNECTTIMEOUT => $this->timeoutFC,
 			CURLOPT_NOBODY => true, 
 			CURLOPT_HEADER => true
 		));
 		
+		if ($this->ckfile) {
+			curl_setopt($ch, CURLOPT_COOKIEJAR, $this->ckfile);
+		}
+		
 		$output = curl_exec($ch);
+		
+		if (!$this->ckfile) {
+			// fill cookies
+			$cookies = array();
+			preg_match_all("/^Set-cookie: (.*?);/ism", $output, $matches);
+			foreach ($matches[1] as $cookie){
+				$pos = strpos($cookie, "=");
+				$name = substr($cookie, 0, $pos);
+				$value = substr($cookie, $pos + 1);
+				$cookies[$name] = $value;
+			}
+			$this->cookies = $cookies;
+		}
 		
 		curl_close($ch);
 	}
@@ -208,9 +236,16 @@ class ImageRemoteDownloader
 		
 		if (!$opts) $opts = array();
 		
+		$this->ckfile = '';
+		$this->cookies = array();
+		$useCookies = true;
+		if (isset($opts['cookies']) && !$opts['cookies']) $useCookies = false;
+		
 		if (!$opts['cookiefile']) {
-			$tempFile = true;
-			$this->ckfile = tempnam("./", "IMGRDC");
+			/*if ($useCookies) {
+				$tempFile = true;
+				$this->ckfile = tempnam("./", "IMGRDC");
+			}*/
 		} else {
 			$this->ckfile = $opts['cookiefile'];
 		}
@@ -234,8 +269,7 @@ class ImageRemoteDownloader
 			if ($opts['rawprogress']) $this->progressRaw = true;
 		}
 		
-		if (isset($opts['cookies']) && !$opts['cookies']) {
-		} else {
+		if ($useCookies) {
 			$this->fillCookies($referrer);
 		}
 		
@@ -252,7 +286,7 @@ class ImageRemoteDownloader
 			}
 		}
 		
-		if ($this->ckfile && $tempFile) unlink($this->ckfile);
+		//if ($this->ckfile && $tempFile) unlink($this->ckfile);
 		
 		return $res;
 	}
