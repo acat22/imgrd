@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<style>
+body {
+	font-family:Arial;
+	font-size:14px;
+}
+#progressBox {
+	width:300px;
+	background:#ddd;
+	margin-top:40px;
+}
+#progressBar {
+	height:5px;
+	background:#6CDB62;
+	border-radius:4px;
+	width:0;
+}
+#image img {
+	max-width:100%;
+	margin-top:20px;
+}
+</style>
+
+<script>
+function load() {
+	var link = document.getElementById('linkInput').value;
+	console.log('Link: ' + link);
+	
+	if (!link) return;
+	
+	$('#progressBar').css('width', 0);
+	$('#image').html('');
+	
+	var params = 'url=' + encodeURIComponent(link);
+	var req = new XMLHttpRequest();
+	
+	req.onreadystatechange = function(e) {
+		if (req.readyState > 2) {
+			var resptxt = req.responseText;
+			var replies = resptxt.split(/\n/g);
+			var lastReply = replies[replies.length - 2];
+			
+			var resp = $.parseJSON(lastReply);
+			if (resp.status == 'complete') resp.p = 100;
+			$('#progressBar').css('width', resp.p + '%');
+			
+			if (resp.status == 'complete') {
+				$('#progressBar').css('width', 0);
+				$('#image').html($('<img src="' + resp.url + '" />'));
+			}
+		}
+	};
+	req.open('POST', 'download.php', true);
+	req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	req.send(params); 
+}
+</script>
+
+</head>
+
+<body>
+
+<h3>Provide the link on the image you want to download</h3>
+<input type="text" style="width:300px" id="linkInput" />
+<input type="button" value="Download" onclick="load()" />
+<div id="progressBox">
+<div id="progressBar"></div>
+<div id="image"></div>
+</div>
+
+</body>
+</html>
