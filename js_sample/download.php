@@ -19,12 +19,12 @@ ob_implicit_flush(true); // well, it doesn't always work
 
 function loadProgress($percent) {
 	$params = array(
-		'status'=>'inprogress',
-		'p' => round($percent * 97)
+		'status'=> 'inprogress',
+		'p' => round($percent * 100)
 	);
 	echo json_encode($params)."\n";
 	ob_flush(); // well, it doesn't always work
-    flush(); // well, it doesn't always work
+	flush(); // well, it doesn't always work
 }
 
 $opts = array(

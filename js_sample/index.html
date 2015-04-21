@@ -27,7 +27,7 @@ body {
 
 <script>
 function load() {
-	var link = document.getElementById('linkInput').value;
+	var link = $('#linkInput').val();
 	
 	if (!link) return;
 	
@@ -40,16 +40,25 @@ function load() {
 	req.onreadystatechange = function(e) {
 		if (req.readyState > 2) {
 			var resptxt = req.responseText;
+			/**
+			 * we send data looking like {json}\n{json}\n, etc.
+			 * so we need to get the latest json which will be 
+			 * (length - 2) ( (length - 1) will be "" )
+			 */
 			var replies = resptxt.split(/\n/g);
 			var lastReply = replies[replies.length - 2];
 			
 			var resp = $.parseJSON(lastReply);
-			if (resp.status == 'complete') resp.p = 100;
-			$('#progressBar').css('width', resp.p + '%');
-			
-			if (resp.status == 'complete') {
+			if (resp.status == 'inprogress') {
+				$('#progressBar').css('width', resp.p + '%');
+			} else if (resp.status == 'complete') {
 				$('#progressBar').css('width', 0);
 				$('#image').html($('<img src="' + resp.url + '" />'));
+			} else if (resp.status == 'error') {
+				// well, error, do smth.
+				$('#progressBar').css('width', 0);
+				$('#image').html('');
+				alert('Error occured');
 			}
 		}
 	};
